@@ -241,9 +241,9 @@ async function handleSubmit(e) {
               </td>
 
               <td style={tdLight}>
-                {p.image && (
+                {p.imageUrl && (
                   <img
-                    src={p.image}
+                    src={p.imageUrl}
                     width="45"
                     height="45"
                     style={{
