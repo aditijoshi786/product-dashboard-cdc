@@ -2,7 +2,13 @@ import { connectDB } from "../../lib/mongodb";
 import Product from "../../models/Product";
 import { z } from "zod";
 import cloudinary from "../../lib/cloudinary";
-
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb"
+    }
+  }
+};
 
 const productValidationSchema = z.object({
   name: z.string().min(1, "Product name is required"),
