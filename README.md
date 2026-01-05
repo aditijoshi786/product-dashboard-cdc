@@ -82,17 +82,19 @@ The dashboard provides a secure interface where admins can:
    ```bash
    npm install
 2. Create a .env.local file in the root directory and add the required environment variables:
+
+   ```bash
    MONGODB_URI=mongodb+srv://aditijoshi554_db_user:oYcv6A8JFqtAb2oU@cluster0.4kximc1.mongodb.net/?appName=Cluster0
    CLOUDINARY_CLOUD_NAME=dihkitdvs
    CLOUDINARY_API_KEY=195428195314241
    CLOUDINARY_API_SECRET=Qgot0qj_HD4uhZRzAf-cJ5ykeFY
 
-3. Start the development server:
+4. Start the development server:
 
    ```bash
    npm run dev
 
-4. Open the aplication in browser:
+5. Open the aplication in browser:
 
    ```bash
    http://localhost:3000
