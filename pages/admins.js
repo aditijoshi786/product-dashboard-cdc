@@ -1,110 +1,88 @@
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import useSWR from "swr";
+
+const fetcher = (url) =>
+  fetch(url, {
+    headers: {
+      "x-admin-role":
+        typeof window !== "undefined"
+          ? localStorage.getItem("adminRole")
+          : ""
+    }
+  }).then((res) => res.json());
 
 export default function AdminsPage() {
   const router = useRouter();
 
-  const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  if (typeof window !== "undefined") {
+    const isLoggedIn = localStorage.getItem("adminLoggedIn");
+    if (isLoggedIn !== "true") {
+      router.replace("/login");
+      return null;
+    }
+  }
+
   const adminRole =
     typeof window !== "undefined"
       ? localStorage.getItem("adminRole")
       : null;
 
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem("adminLoggedIn");
+  const {
+    data: admins,
+    error,
+    mutate
+  } = useSWR("/api/admin/list", fetcher);
 
-    if (isLoggedIn !== "true") {
-      router.replace("/login");
-      return;
-    }
-
-    fetchAdmins();
-  }, []);
-
- async function fetchAdmins() {
-  try {
-    const role = localStorage.getItem("adminRole");
-
-    const res = await fetch("/api/admin/list", {
-      headers: {
-        "x-admin-role": role
-      }
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to load admins");
-    }
-
-    setAdmins(data);
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
+  if (error) {
+    return (
+      <p style={{ color: "red", padding: 40 }}>
+        Failed to load admins
+      </p>
+    );
   }
-}
 
+  if (!admins) {
+    return null;
+  }
 
   async function handleDeleteAdmin(adminId) {
-  const role = localStorage.getItem("adminRole");
+    await fetch("/api/admin/delete", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminId })
+    });
 
-  const res = await fetch("/api/admin/delete", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      adminId,
-      requesterRole: role
-    })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.message);
-    return;
-  }
-
-  fetchAdmins();
-}
-
-  if (loading) {
-    return <p style={{ padding: 40 }}>Loading admins...</p>;
+    mutate(); 
   }
 
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
         <div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20
-  }}
->
-  <h2 style={titleStyle}>Admin Management</h2>
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 20
+          }}
+        >
+          <h2 style={titleStyle}>Admin Management</h2>
 
-  <button
-    onClick={() => router.push("/add-admin")}
-    style={{
-      backgroundColor: "#22c55e",
-      color: "white",
-      padding: "8px 14px",
-      borderRadius: 6,
-      border: "none",
-      cursor: "pointer",
-      fontWeight: "bold"
-    }}
-  >
-    + Add Admin
-  </button>
-</div>
-
-
-        {error && <p style={errorStyle}>{error}</p>}
+          <button
+            onClick={() => router.push("/add-admin")}
+            style={{
+              backgroundColor: "#22c55e",
+              color: "white",
+              padding: "8px 14px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            + Add Admin
+          </button>
+        </div>
 
         <table style={tableStyle}>
           <thead>
@@ -126,14 +104,11 @@ export default function AdminsPage() {
                 {adminRole === "supreme" && (
                   <td style={tdStyle}>
                     <button
-                      onClick={() => handleDeleteAdmin(admin._id)}
+                      onClick={() =>
+                        handleDeleteAdmin(admin._id)
+                      }
                       style={deleteBtn}
                       disabled={admin.role === "supreme"}
-                      title={
-                        admin.role === "supreme"
-                          ? "Supreme admin cannot be deleted"
-                          : ""
-                      }
                     >
                       Delete
                     </button>
@@ -175,8 +150,7 @@ const cardStyle = {
 
 const titleStyle = {
   color: "#fafafa",
-  textAlign: "center",
-  marginBottom: 20
+  textAlign: "center"
 };
 
 const tableStyle = {
@@ -215,10 +189,4 @@ const backBtn = {
   border: "none",
   cursor: "pointer",
   fontSize: 13
-};
-
-const errorStyle = {
-  color: "#fca5a5",
-  textAlign: "center",
-  marginBottom: 10
 };

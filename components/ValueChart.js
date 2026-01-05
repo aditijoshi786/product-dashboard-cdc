@@ -31,18 +31,17 @@ export default function ValueChart({ products }) {
 
           <XAxis
   dataKey="name"
-  stroke="#111827"
   tick={{ fill: "#111827", fontSize: 12 }}
   angle={-20}
   textAnchor="end"
-  interval={0}
 />
 
+
           <YAxis
-            tick={{ fill: "#fff" }}
-            allowDecimals={false}
-            domain={[0, "dataMax + 100"]}
-          />
+  tick={{ fill: "#111827", fontSize: 12 }}
+  width={50}
+  allowDecimals={false}
+/>
 
           <Tooltip
             contentStyle={{ backgroundColor: "#222", border: "1px solid #555" }}
