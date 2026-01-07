@@ -85,11 +85,17 @@ The application leverages **server-side rendering (SSR)** for faster page loads 
 
 ## Running the Project Locally
 
-1. Install dependencies:
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/aditijoshi786/product-dashboard-cdc
+   cd product-dashboard-cdc
+
+2. Install dependencies:
    
    ```bash
    npm install
-2. Create a .env.local file in the root directory and add the required environment variables:
+3. Create a .env.local file in the root directory and add the required environment variables:
 
    ```bash
    MONGODB_URI=mongodb+srv://aditijoshi554_db_user:oYcv6A8JFqtAb2oU@cluster0.4kximc1.mongodb.net/?appName=Cluster0
