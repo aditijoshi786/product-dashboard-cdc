@@ -53,7 +53,7 @@ The application leverages **server-side rendering (SSR)** for faster page loads 
 
 **Admin**
 - Username: `admin56`
-- Password: `pinkfeather`
+- Password: `pinkfeathers`
 
 > These credentials are provided for demonstration purposes only.
 
